@@ -1,4 +1,4 @@
-prefix=/src/clvm-san-adapter/.build
+prefix=/src/san-test/gen-san-adapter/.build
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

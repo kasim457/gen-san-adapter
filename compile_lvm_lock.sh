@@ -20,5 +20,10 @@ cp -f $workdir/lvm2/$LVMVERSION/lib/locking/liblvm2euca*.so $builddir/
 libs=`ls $workdir/lvm2/$LVMVERSION/lib/locking/liblvm2euca*.so`
 echo "$libs are copied to directory $builddir"
 
+if ! test -d $workdir/BUILD;then
+  mkdir $workdir/BUILD
+fi
 
-
+# copy the compile file to BUILD directory
+cp -f $builddir/* $workdir/BUILD
+rm -rf $builddir

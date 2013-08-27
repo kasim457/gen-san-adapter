@@ -43,7 +43,7 @@ echo "copy files: $plfiles to directory $INSTALLDIR"
 tmpdir="/tmp/$$"
 mkdir $tmpdir
 cp -f *.pl $tmpdir/
-chown $EUCA_USER:$EUCA_USER $tmpdir/* && chmod 0755 $tmpdir/*
+chmod 0755 $tmpdir/*
 mv $tmpdir/* $INSTALLDIR/
 rm -rf $tmpdir
 

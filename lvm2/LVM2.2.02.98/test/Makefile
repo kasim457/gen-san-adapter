@@ -19,10 +19,10 @@ subdir = $(shell pwd|sed 's,.*/,,')
 srcdir = .
 top_srcdir = ..
 top_builddir = ..
-abs_srcdir = "/src/clvm-san-adapter/lvm2/LVM2.2.02.98/test"
-abs_builddir = "/src/clvm-san-adapter/lvm2/LVM2.2.02.98/test"
-abs_top_builddir = "/src/clvm-san-adapter/lvm2/LVM2.2.02.98"
-abs_top_srcdir = "/src/clvm-san-adapter/lvm2/LVM2.2.02.98"
+abs_srcdir = "/src/san-test/gen-san-adapter/lvm2/LVM2.2.02.98/test"
+abs_builddir = "/src/san-test/gen-san-adapter/lvm2/LVM2.2.02.98/test"
+abs_top_builddir = "/src/san-test/gen-san-adapter/lvm2/LVM2.2.02.98"
+abs_top_srcdir = "/src/san-test/gen-san-adapter/lvm2/LVM2.2.02.98"
 
 SUBDIRS = api unit
 SOURCES = lib/not.c lib/harness.c

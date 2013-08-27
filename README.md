@@ -39,8 +39,8 @@ Configuration
 ===============
 ###1) In storage controller <br/>
 take a example that you have cluster "cluster001" and you had SAN device attached to SC at /dev/sdb
-\# euca-modify-property -p storage.cluster001.blockmanager=clvm
-\# euca-modify-property -p storage.cluster001.sharedevice=/dev/sdb
+\# euca-modify-property -p cluster001.storage.blockstoragemanager=clvm
+\# euca-modify-property -p cluster001.storage.sharedevice=/dev/sdb
 <br/>
 
 ###2) In NC controller <br/>

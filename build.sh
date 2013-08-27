@@ -4,6 +4,7 @@ workdir=`pwd`
 build=$workdir/BUILD
 
 . ./compile_lvm_lock.sh
+cd $workdir
 . ./compile_sc.sh
 
 cp -f $workdir/src/node_controller/* $build/
