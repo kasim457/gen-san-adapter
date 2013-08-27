@@ -13,4 +13,3 @@ cp -f $workdir/src/install_scripts/* $build/
 cd $build && tar cvf gen-san-adapter.tar *
 mv $build/gen-san-adapter.tar $workdir/
 
-
