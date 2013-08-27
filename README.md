@@ -92,7 +92,7 @@ In tags sections, add the following items: <br/>
 tags { <br/>
 &nbsp;&nbsp;...<br/>
 &nbsp;&nbsp;hosttags = 1 <br/>
-&nbsp;&nbsp;@192.168.1.101{} <br/>  #replace "192.168.1.101" as the node controller registry IP
+&nbsp;&nbsp;@192.168.1.101{} #replace "192.168.1.101" as the node controller registry IP <br/>
 &nbsp;&nbsp;...<br/>
 }<br/>
 ###Configure /etc/iscsi/initiatorname.iscsi file <br>
