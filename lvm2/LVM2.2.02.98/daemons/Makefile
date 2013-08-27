@@ -1,0 +1,47 @@
+#
+# Copyright (C) 2004-2011 Red Hat, Inc. All rights reserved.
+#
+# This file is part of LVM2.
+#
+# This copyrighted material is made available to anyone wishing to use,
+# modify, copy, or redistribute it subject to the terms and conditions
+# of the GNU General Public License v.2.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+srcdir = .
+top_srcdir = ..
+top_builddir = ..
+
+ifeq ("no", "yes")
+  SUBDIRS += lvmetad
+endif
+
+.PHONY: dmeventd clvmd cmirrord lvmetad
+
+ifneq ("none", "none")
+  SUBDIRS += clvmd
+endif
+
+ifeq ("no", "yes")
+  SUBDIRS += cmirrord
+endif
+
+ifeq ("", "yes")
+  SUBDIRS += dmeventd
+ifneq ("$(CFLOW_CMD)", "")
+daemons.cflow: dmeventd.cflow
+endif
+endif
+
+ifeq ($(MAKECMDGOALS),distclean)
+  SUBDIRS = clvmd cmirrord dmeventd lvmetad
+endif
+
+include $(top_builddir)/make.tmpl
+
+ifeq ("", "yes")
+device-mapper: dmeventd.device-mapper
+endif
