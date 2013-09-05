@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style type="text/css">
+.Chapter {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 24px;
+	font-style: normal;
+	font-weight: bold;
+}
+.content {
+	font-family: Times New Roman, Times, serif;
+	font-size:18px;
+}
+.command {
+	font-family: "Times New Roman", Times, serif;
+	font-size: 18px;
+	color: #FFF;
+	text-decoration: underline overline;
+	font-style: italic;
+	background-color: #000;
+}
+.subtitle {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 16px;
+	font-weight: bold;
+}
+.subtitle-2 {
+	font-weight: bold;
+	font-size: 15px;
+	line-height: normal;
+	font-family: Verdana, Geneva, sans-serif;
+}
+.configuration {
+	font-family: "Comic Sans MS", cursive;
+	font-size: 14px;
+	font-style: oblique;
+}
+</style>
+</head>
+
+<body>
+<p class="Chapter"><strong>Introduction
+</strong></p>
+<p class="content"> Target of this project is to provide a generic san adapter for eucalyptus (current support 3.3.0/3.3.01)<br />
+This san adapter comprise of three parties:</p>
+<ul class="content">
+  <li> A blockmanager for storage controller, name "clvm"    </strong></li>
+  <li> A customized lvm2 lock which disable write operation for volume group metadata in node controller host</li>
+  <li> Some patched perl iscsi scripts which change behavior of discovering the exported block device in node controller host</li>
+</ul>
+<p class="content">    For details of design, please refer to design documents<br />
+This adapter only support eucalyptus 3.3.0 (propably 3.3.0.1 but not testing until now).</p>
+<p class="Chapter"> <strong>Compiling </strong></p>
+<p class="content">All source codes of this project now can be compiled in centos 6.3 or 6.4. <br />
+  Before you begin to compile this project
+make sure you already has a environment which can compile eucalypyus 3.3.0/3.3.0.1, <br />
+for example resolve all build dependency<br />
+Following are compiling steps:</p>
+<p><span class="content">1) download the source codes from github
+  </span><br />
+  <tt class="command"> #git clone</tt><br />
+  <br />
+  <span class="content">2) run the build script </span><br />
+  <span class="command">  #cd gen-san-adapter && ./build.sh</span> <br />
+  <span class="content">A tarball "gen-san-adapter.tar" will be generated in this directory.</span></p>
+<p class="Chapter">Installation</p>
+<p class="content"> This generic san adapter need to be installed after you install eucalyptus 3.3.0 and before cloud are initialized
+    
+    <br />
+  You can have a install package "gen-san-adapter.tar" by compiling the source codes
+  or download from github <br />
+  <a href="https://github.com/nathanxu/gen-san-adapter-tarball">https://github.com/nathanxu/gen-san-adapter-tarball</a></p>
+<p class="content">
+  1) In storage controller<br />
+  <span class="command"># tar vxf gen-san-adapter.3.3.0.tar <br />
+  # ./install_sc.sh
+  </span><br />
+  A jar file will be installed to directory $EUCALYPTUS/usr/share/eucalyptus <br />
+  <br />
+  2) In node controller
+  <br />
+  <span class="command"># tar vxf gen-san-adapter.3.3.0.tar <br />
+  # ./install_nc.sh
+  </span><br />
+  A lvm lock library will be installed to /lib and perl scripts will be installed into $EUCALYPTUS/usr/share/eucalyptus</p>
+<p class="Chapter">Configuration</p>
+<p class="content"> <span class="subtitle">1. In Storage Controller </span><br />
+  <br />
+  Take a example that you have cluster "cluster001" and you had SAN device attached to SC at /dev/sdb <br />
+  <br />
+  <span class="command"># euca-modify-property -p cluster001.storage.blockstoragemanager=clvm <br />
+  # euca-modify-property -p cluster001.storage.sharedevice=/dev/sdb
+  </span><br />
+</p>
+<p class="content"><span class="subtitle">2. In NC controller </span><br />
+  <br />
+  At first, you need to change the lvm configuration
+  please refer the example of lvm.conf and edit /etc/lvm/lvm.conf by change or adding following items<br />
+  <span class="subtitle-2"><br />
+  Configure /etc/lvm/lvm.conf file</span><br />
+  <br />
+In global section. change the locking type and locking library
+  <span class="configuration"><br />
+  ...
+  global { <br />
+  ...
+  <br />
+  # Type of locking to use. Defaults to local file-based locking (1).
+  <br />
+  # Turn locking off by setting to 0 (dangerous: risks metadata corruption
+  <br />
+  # if LVM2 commands get run concurrently).<br />
+# Type 2 uses the external shared library locking_library.
+  <br />
+  # Type 3 uses built-in clustered locking.
+  <br />
+  # Type 4 uses read-only locking which forbids any operations that might
+  <br />
+  # change metadata.
+  <br />
+  #locking_type = 1
+  <br />
+locking_type = 2  <br />
+  </span><span class="configuration">... <br />
+  <br />
+  # The external locking library to load if locking_type is set to 2. <br />
+  # locking_library = "liblvm2clusterlock.so"
+  <br />
+  locking_library = "/lib/liblvm2eucalock.so"<br />
+....</span></p>
+<p class="content">}</p>
+<p class="content">In activation section, change the volume group filter.<br />
+  <span class="configuration">activation {
+  <br />
+  ...
+  <br />
+  # If volume_list is defined, each LV is only activated if there is a
+  # match against the list.
+  <br />
+  # "vgname" and "vgname/lvname" are matched exactly.
+    <br />
+  # "@tag" matches any tag set in the LV or VG.
+    <br />
+  # "@*" matches if any tag defined on the host is also set in the LV or VG
+    #
+    <br />
+  #volume_list = [ "vg1", "vg2/lvol1", "@tag1", "@*" ]
+    <br />
+  volume_list = [ "@*" ]
+    <br />
+  ...
+  <br />
+}  <br />
+  </span>In item volume_list, you should add all existing vgs which include non-san pv
+  for example, in the NC host, if you have volume groups /dev/vg1 and /dev/vg2 which use the local attached disks
+  you should configure the volume_list item as:
+volume_list = [ "vg1","vg2","@*" ]    </p>
+<p class="content"><span class="content">In tags sections, add the following items: </span><span class="configuration"><br />
+  tags {
+      <br />
+  ...
+  <br />
+  hosttags = 1
+@192.168.1.101{} #replace "192.168.1.101" as the node controller registry IP<br />
+  </span><span class="configuration">... <br />
+  }</span> </p>
+<p class="content"><span class="subtitle-2">Configure /etc/iscsi/initiatorname.iscsi file</span> </p>
+<p class="content">Configure the InitatorName as "InitiatorName=iqn.1994-05.com.redhat:your_node_ctronller_ip
+  for example, <br />
+  your node controller will be registered in cloud with IP 191.168.1.101, then configure
+  the InitiatorName as:  </p>
+<p class="configuration">InitiatorName=iqn.1994-05.com.redhat:192.168.1.101</p>
+<p><strong class="Chapter">Simulate the SAN device<br />
+</strong><br />
+  <span class="content">In case that there isn't SAN device in your  environment and want to test this adapter.   you can use iscsi device to simulate the real SAN device. <br />
+  here is a  example.</span><br />
+  <strong class="subtitle"><br />
+  1. In the host of storage controller </strong><strong class="subtitle">(example IP: 192.168.1.100)<br />
+</strong></p>
+<p class="content">As tgtd already install  in host of storage controller. you can make a loop block device then export the  loop block device to node controller through iscsi. here is  the setups</p>
+<p class="content">To make the loop block device and export to  node controller<br />
+   1) make a loop device.  (200G), <br />
+  <em class="command"><u># dd if=/dev/zero  of=/data/euca_san_block.dat bs=10M count=10240<br />
+    # losetup /dev/loop1  /data/euca_san_block.dat</u></em><br />
+  2) export the loop device (target id =1) if  not avaible <br />
+  <em class="command"><u>#tgtadm --lld iscsi --mode account  --op new --user test --password test123<br />
+    # tgtadm --lld iscsi --op new --mode target --tid 1 -T store1<br />
+    #tgtadm --lld iscsi --op new --mode logicalunit --tid 1 --lun 1 -b /dev/loop1<br />
+    #tgtadm --lld iscsi --op bind --mode account --tid 1 --user test<br />
+    #tgtadm --lld iscsi --op bind --mode target --tid 1 -I ALL</u></em><br />
+  <strong><br />
+   <span class="subtitle">2. In the host of node controller.</span></strong><br />
+   <br />
+  In the host of node controller, discovery and  connect the ISCSI device.<br />
+  <span class="command"><em><u>#iscsiadm -m node -T store1   -p 192.168.1.100</a> -o update  --name node.session.auth.authmethod --value=CHAP</u></em><br />
+  <em><u>#iscsiadm -m node -T store1   -p 192.168.1.100  --op update --name node.session.auth.username  --value=test</u></em><br />
+  <em><u>#iscsiadm -m node -T store1   -p 192.168.1.100 --op update --name  node.session.auth.password --value=test123</u></em><br />
+<em><u>#iscsiadm -m node -T store1   -p 192.168.1.100 -l </u></em></span></p>
+<p class="configuration">&nbsp;</p>
+</body>
+</html>
