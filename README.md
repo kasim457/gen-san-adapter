@@ -1,14 +1,14 @@
 Introduction
 =============
 
-target of this project is to provide a generic san adapter for eucalyptus (current support 3.3.0) <br/>
+target of this project is to provide a generic san adapter for eucalyptus (current support 3.3.0/3.3.0.1) <br/>
 this san adapter comprise of three parties: <br/>
 <li>a blockmanager for storage controller, name "clvm" <br/>
 <li>a customized lvM lock which disable write operation for volume group metadata in node controller host <br/>
 <li>some patched peal iscsi scripts which change behavior of discovering the exported block device in node controller host <br/>
 <br/>
-For detail design, please refer to design documents <br/>
-This adapter only support eucalyptus 3.3.0 (propably 3.3.0.1 but not testing until now). <br/>
+For details of design, please refer to design documents <br/>
+This adapter only support eucalyptus 3.3.0/3.3.0.1. <br/>
 Compiling
 ===============
 All source codes of this project now can be compiled in centos 6.3 or 6.4, before you begin to compile this project <br/>
