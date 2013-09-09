@@ -402,14 +402,17 @@ public class CLVMManager implements LogicalStorageManager {
 		updateVolumeGroup();
 		VolumeEntityWrapperManager volumeManager = new VolumeEntityWrapperManager();
 		LVMVolumeInfo foundSnapshotInfo = volumeManager.getVolumeInfo(snapshotId);
+		LOG.info("create volume from snapshot: " + snapshotId);
 		if(foundSnapshotInfo != null) {
 			String status = foundSnapshotInfo.getStatus();
+			//LOG.info("create volume from snapshot,snapshot status: " + );
 			if(status.equals(StorageProperties.Status.available.toString())) {
 				String lvName = generateLVName(volumeId); //"lv-" + Hashes.getRandom(4);
 				LVMVolumeInfo lvmVolumeInfo = volumeManager.getVolumeInfo();
 				String snapId = foundSnapshotInfo.getVolumeId();
 				String loFileName = foundSnapshotInfo.getLoFileName();
 				volumeManager.finish();
+
 				try {
 					File snapshotFile = new File(DirectStorageInfo.getStorageInfo().getVolumesDir() + PATH_SEPARATOR + snapId);
 					assert(snapshotFile.exists());
@@ -728,7 +731,7 @@ public class CLVMManager implements LogicalStorageManager {
 					throw new EucalyptusCloudException("Unable to remove logical volume " + absoluteSnapLVName);
 				}
 				snapshotInfo.setLoFileName(snapRawFileName);
-				// snapshotInfo.setStatus(StorageProperties.Status.available.toString());
+				snapshotInfo.setStatus(StorageProperties.Status.available.toString());
 				snapshotInfo.setSize(size);
 				volumeManager = new VolumeEntityWrapperManager();
 				volumeManager.add(snapshotInfo);
