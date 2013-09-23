@@ -295,8 +295,8 @@ public class CLVMManager implements LogicalStorageManager {
 					LOG.error(error);
 				}
 				volumeManager.remove(lvmVolInfo);
-				volumeManager.finish();
 			}
+			volumeManager.finish();
 		} catch (EucalyptusCloudException e) {
 			LOG.debug("Failed to clean volume: " + volumeId, e);
 			return;
