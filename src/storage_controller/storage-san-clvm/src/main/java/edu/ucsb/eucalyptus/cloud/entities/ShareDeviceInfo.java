@@ -74,7 +74,7 @@ import com.eucalyptus.configurable.ConfigurableIdentifier;
 import com.eucalyptus.entities.AbstractPersistent;
 import com.eucalyptus.entities.EntityWrapper;
 import com.eucalyptus.util.EucalyptusCloudException;
-import com.eucalyptus.util.StorageProperties;
+import com.eucalyptus.blockstorage.util.StorageProperties;
 
 @Entity @javax.persistence.Entity
 @PersistenceContext(name="eucalyptus_storage")

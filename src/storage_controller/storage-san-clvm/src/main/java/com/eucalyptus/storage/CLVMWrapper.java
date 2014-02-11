@@ -74,7 +74,7 @@ import java.util.regex.Pattern;
 
 import com.eucalyptus.system.BaseDirectory;
 import com.eucalyptus.util.EucalyptusCloudException;
-import com.eucalyptus.util.StorageProperties;
+import com.eucalyptus.blockstorage.util.StorageProperties;
 
 import edu.ucsb.eucalyptus.util.SystemUtil;
 

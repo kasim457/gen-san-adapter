@@ -95,24 +95,33 @@ import com.eucalyptus.configurable.PropertyDirectory;
 import com.eucalyptus.crypto.Ciphers;
 import com.eucalyptus.entities.Entities;
 import com.eucalyptus.entities.EntityWrapper;
-import com.eucalyptus.storage.StorageManagers.StorageManagerProperty;
+import com.eucalyptus.blockstorage.StorageManagers.StorageManagerProperty;
 import com.eucalyptus.system.BaseDirectory;
 import com.eucalyptus.util.EucalyptusCloudException;
-import com.eucalyptus.util.StorageProperties;
-import com.eucalyptus.util.WalrusProperties;
+import com.eucalyptus.blockstorage.util.StorageProperties;
+import com.eucalyptus.objectstorage.util.WalrusProperties;
 import com.google.common.base.Function;
 
 //import edu.ucsb.eucalyptus.cloud.entities.DASInfo;
-import edu.ucsb.eucalyptus.cloud.entities.DirectStorageInfo;
+//import edu.ucsb.eucalyptus.cloud.entities.DirectStorageInfo;
 //import edu.ucsb.eucalyptus.cloud.entities.ISCSIVolumeInfo;
+
+import com.eucalyptus.blockstorage.entities.DirectStorageInfo;
 
 import edu.ucsb.eucalyptus.cloud.entities.ShareDeviceInfo;
 import edu.ucsb.eucalyptus.cloud.entities.ShareDeviceVolumeInfo;
-import edu.ucsb.eucalyptus.cloud.entities.LVMVolumeInfo;
-import edu.ucsb.eucalyptus.cloud.entities.StorageInfo;
+import com.eucalyptus.blockstorage.entities.LVMVolumeInfo;
+import com.eucalyptus.blockstorage.entities.StorageInfo;
+
+//import edu.ucsb.eucalyptus.cloud.entities.LVMVolumeInfo;
+//import edu.ucsb.eucalyptus.cloud.entities.StorageInfo;
 import edu.ucsb.eucalyptus.msgs.ComponentProperty;
 import edu.ucsb.eucalyptus.util.SystemUtil;
 import edu.ucsb.eucalyptus.util.SystemUtil.CommandOutput;
+
+import com.eucalyptus.blockstorage.LogicalStorageManager;
+import  com.eucalyptus.blockstorage.LVMWrapper;
+import com.eucalyptus.storage.common.CheckerTask;
 
 @StorageManagerProperty("clvm")
 public class CLVMManager implements LogicalStorageManager {

@@ -74,6 +74,7 @@
 #include "locking.h"
 #include "locking_types.h"
 #include "lvm-string.h"
+#include "metadata.h"
 #include "activate.h"
 #include "toolcontext.h"
 #include "memlock.h"
@@ -85,7 +86,7 @@
 static void (*_reset_file_fn) (void) = NULL;
 static void (*_end_file_fn) (void) = NULL;
 static int (*_lock_file_fn) (struct cmd_context * cmd, const char *resource,
-			uint32_t flags) = NULL;
+			uint32_t flags, struct logical_volume *lv ) = NULL;
 static int (*_lock_file_query_fn) (const char *resource, int *mode) = NULL;
 
 static char EUCA_VG_PREFIX[] = "euca-sharedevice-vg";
@@ -98,6 +99,7 @@ void locking_end(void);
 /**
  *  implementation
  */
+/*
 static int _no_lock_resource(struct cmd_context *cmd, const char *resource,
 			     uint32_t flags)
 {
@@ -130,7 +132,7 @@ static int _no_lock_resource(struct cmd_context *cmd, const char *resource,
 
 	return 1;
 }
-
+*/
 static int _readonly_lock_resource(struct cmd_context *cmd,
 				   const char *resource,
 				   uint32_t flags)
@@ -138,17 +140,18 @@ static int _readonly_lock_resource(struct cmd_context *cmd,
     int euca_vg_prefix_len;
     char *vg_prefix; //[euca_vg_prefix_len + 1];
     int is_euca_vg = 0;
-    
     euca_vg_prefix_len = strlen(EUCA_VG_PREFIX);
-    vg_prefix = dm_zalloc(sizeof(char*) * euca_vg_prefix_len);
+    vg_prefix = dm_zalloc(sizeof(char*) * euca_vg_prefix_len+1);
     //compare the vg name with euca vg prefix
     if (strlen(resource) >= euca_vg_prefix_len ) {
        strncpy(vg_prefix,resource,euca_vg_prefix_len);
+       vg_prefix[euca_vg_prefix_len]='\0';
        if (!strcmp(vg_prefix,EUCA_VG_PREFIX) ) {
           is_euca_vg = 1;
        }
     }
-    dm_free(vg_prefix);
+    dm_free(vg_prefix); 
+    
     if ((flags & LCK_TYPE_MASK) == LCK_WRITE &&
 	    (flags & LCK_SCOPE_MASK) == LCK_VG &&
 	    !(flags & LCK_CACHE) &&
@@ -156,8 +159,18 @@ static int _readonly_lock_resource(struct cmd_context *cmd,
                          
 		log_error("Read-only locking set. Write locks are prohibited.");
 		return 0;
-	}
-	return  _lock_file_fn(cmd, resource, flags);
+	} 
+
+    if ( (flags & LCK_SCOPE_MASK) == LCK_LV)
+    {
+        struct logical_volume *lv_to_free = lv_from_lvid(cmd, resource, 0);
+        int ret =  _lock_file_fn(cmd, resource, flags,lv_to_free);    
+        if (lv_to_free) {
+             release_vg(lv_to_free->vg);  
+        }
+        return ret;
+    }
+    return  _lock_file_fn(cmd, resource, flags,NULL);
 }
 
 /* API entry point for LVM */
@@ -198,5 +211,4 @@ int query_resource(struct cmd_context *cmd, const char *resource, uint32_t flags
 {
     return 0;
 }
-
 

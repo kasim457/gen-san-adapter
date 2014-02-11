@@ -9,7 +9,7 @@ fi
 if ! test -d $workdir/eucalyptus; then
   echo "there is no eucalyptus download it from github"
   git clone git://github.com/eucalyptus/eucalyptus --recursive
-  cd $workdir/eucalyptus && git checkout 3.3.0
+  cd $workdir/eucalyptus && git checkout 3.4.1
   cp -rf $workdir/lib $workdir/eucalyptus/clc/
 
 fi

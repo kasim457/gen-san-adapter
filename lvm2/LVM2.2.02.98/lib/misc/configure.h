@@ -466,7 +466,7 @@
 /* #undef LVMETAD_SUPPORT */
 
 /* Path to lvm binary. */
-#define LVM_PATH "/src/san-test/gen-san-adapter/.build/sbin/lvm"
+#define LVM_PATH "/data/src/gen-san-adapter/.build/sbin/lvm"
 
 /* Define to 1 if `major', `minor', and `makedev' are declared in <mkdev.h>.
    */

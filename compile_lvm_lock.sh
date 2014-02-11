@@ -4,7 +4,7 @@ workdir=`pwd`
 builddir=${workdir}/.build
 mkdir $builddir
 
-LVMVERSION=LVM2.2.02.98
+LVMVERSION=LVM2.2.02.100
 
 #copy the lock source code to LVM2 locking dir
 echo "===========copy the lock source code to LVM2 locking dir=============================="
