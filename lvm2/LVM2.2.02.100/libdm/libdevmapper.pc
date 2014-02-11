@@ -1,0 +1,11 @@
+prefix=/data/src/gen-san-adapter/.build
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: devmapper
+Description: device-mapper library
+Version: 1.02.79
+Cflags: -I${includedir} 
+Libs: -L${libdir} -ldevmapper
+Requires.private: libselinux 
